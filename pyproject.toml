@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "celery-eye"
-version = "0.1.1"
+version = "0.2.0"
 description = "Celery Eye - Django app to monitor and view Celery task logs in the admin panel"
 readme = "README.md"
 license = {text = "MIT"}
