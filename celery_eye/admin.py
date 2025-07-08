@@ -3,10 +3,6 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from celery_eye.models import CeleryWorkerLog, CeleryWorkerMetadata
 
-
-
-
-
 @admin.register(CeleryWorkerLog)
 class CeleryWorkerLogAdmin(admin.ModelAdmin):
     list_display = ('worker', 'task_name', 'status', 'runtime', 'timestamp')

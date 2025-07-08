@@ -6,8 +6,17 @@ import socket
 import os
 import sys
 
-LOG_DIR = './logs'  # Shared Docker volume
-os.makedirs(LOG_DIR, exist_ok=True)  # Ensure log directory exists
+from django.conf import settings
+
+CELERY_LOG_DIR = getattr(settings, 'CELERY_LOG_DIR', None)
+
+if CELERY_LOG_DIR is None:
+    # Optional: use a default or raise a warning
+    import os
+    CELERY_LOG_DIR = os.path.join(os.path.dirname(__file__), '..', 'logs')  # fallback
+
+
+os.makedirs(CELERY_LOG_DIR, exist_ok=True)  # Ensure log directory exists
 
 
 @task_prerun.connect
@@ -17,13 +26,8 @@ def log_task_prerun(sender=None, task_id=None, task=None, args=None, kwargs=None
     """
     try:
         hostname = socket.gethostname()
-
-        # Use sender.name (task name) + task_id for log file naming
-        if "watch_mongo_changes" in sender.name:
-            task_name = args[1] 
-        else:
-            task_name = sender.name
-        log_file = os.path.join(LOG_DIR, f"{task_name}-{task_id}.log")
+        task_name = sender.name
+        log_file = os.path.join(CELERY_LOG_DIR, f"{task_name}-{task_id}.log")
 
         # Redirect stdout and stderr to the log file
         sys.stdout = open(log_file, "a")
@@ -81,7 +85,6 @@ def log_task_postrun(sender=None, task_id=None, task=None, args=None, kwargs=Non
         worker.last_run_at = worker_end_time
         worker.save()
         
-       
 
     except Exception as e:
         traceback.print_exc()
