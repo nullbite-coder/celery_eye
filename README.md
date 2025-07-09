@@ -88,19 +88,27 @@ INSTALLED_APPS = [
 ]
 ```
 
-### 2. Run migrations
+### 2. Configure MYPROJECT/urls.py
+
+```python
+urlpatterns = [
+    path("celery-eye/", include("celery_eye.urls")),
+]
+```
+
+### 3. Run migrations
 
 ```bash
 python manage.py migrate
 ```
 
-### 3. Create a superuser (if you haven't)
+### 4. Create a superuser (if you haven't)
 
 ```bash
 python manage.py createsuperuser
 ```
 
-### 4. Start your services
+### 5. Start your services
 
 Make sure your services are running:
 

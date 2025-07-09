@@ -57,7 +57,7 @@ def log_task_postrun(sender=None, task_id=None, task=None, args=None, kwargs=Non
     try:
         task_name = sender.name
         worker_name = f"{task_name}-{task_id}"
-
+        
         # Retrieve the matching worker
         worker = CeleryWorkerMetadata.objects.get(worker_name=worker_name)
 
@@ -67,6 +67,7 @@ def log_task_postrun(sender=None, task_id=None, task=None, args=None, kwargs=Non
             exception = str(extra.get('exception', 'Unknown error'))
         worker_end_time = now()
         runtime = (worker_end_time - worker.started_at).total_seconds()
+        print(f"[{now()}] Task {task_name} ({task_id}) finished with state {state} in {runtime:.2f} seconds")
 
         CeleryWorkerLog.objects.create(
             worker=worker,
